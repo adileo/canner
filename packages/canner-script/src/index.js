@@ -131,6 +131,12 @@ export default function builder(tag: string | Function, attributes: Object, ...c
         type: 'date'
       };
     }
+    case 'locationFilter': {
+      return {
+        ...attributes,
+        type: 'location'
+      };
+    }
     case 'dateRangeFilter': {
       return {
         ...attributes,

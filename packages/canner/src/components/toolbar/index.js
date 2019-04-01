@@ -362,7 +362,12 @@ export function processWhere(where: Object)  {
     const v = where[key];
     if (isEnd(v)) {
       const {op, value} = parseOpAndValue(v);
-      result[`${key}_${op}`] = value;
+      if(op === 'regex'){
+        result[key] = value;
+      }else{
+        result[`${key}_${op}`] = value;
+      }
+      
     } else {
       result[key] = processWhere(v);
     }
@@ -378,8 +383,11 @@ function isEnd(v: Object) {
 
   const keys = Object.keys(v);
   const value = v[keys[0]];
+  if(keys.length === 1 && keys[0] === 'near'){
+    return true;
+  }
   return keys.length === 1 &&
-    ['lt', 'lte', 'gt', 'gte', 'eq', 'contains'].indexOf(keys[0]) !== -1 &&
+    ['lt', 'lte', 'gt', 'gte', 'eq', 'contains', 'regex', 'neq'].indexOf(keys[0]) !== -1 &&
     (typeof value === 'string' ||
     typeof value === 'boolean' ||
     typeof value === 'number');

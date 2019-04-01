@@ -2,8 +2,9 @@
 import * as React from 'react';
 import SelectFilter from './select';
 import NumberFilter from './number';
-import DateRangeFilter from './date';
+import DateFilter from './date';
 import TextFilter from './text';
+import LocationFilter from './location'
 import styled from 'styled-components';
 import {Icon} from 'antd';
 import debounce from 'lodash/debounce';
@@ -26,7 +27,9 @@ type Props = {
       condition: Object,
     }>,
     alwaysDisplay: boolean,
-    label: string
+    label: string,
+    value: any,
+    valueFilter: any
   }>,
   where: Object
 }
@@ -58,6 +61,15 @@ const FilterWrapper = styled.div`
 `
 
 export default class FilterGroup extends React.Component<Props, State> {
+  // constructor(args){
+  //   super(args)
+  //   const {changeFilter, filters = [], where} = this.props;
+  //   filters.forEach((filter) => {
+  //     if(filter.valueFilter){
+  //       changeFilter(filter.valueFilter(where))
+  //     }
+  //   })
+  // }
   onChange = (cond: Object) => {
     let {where, changeFilter} = this.props;
     if (isEmpty(cond)) {
@@ -101,17 +113,20 @@ export default class FilterGroup extends React.Component<Props, State> {
     }
     const debounceChange = debounce(this.onChange, 500);
     const renderFilter = (filter, index) => {
+      
       switch (filter.type) {
         case 'select':
           return <SelectFilter index={index} onChange={debounceChange} options={filter.options} where={where}/>;
         case 'number':
           return <NumberFilter index={index} onChange={debounceChange} name={filter.field} where={where}/>;
         
-        case 'dateRange':
-          return <DateRangeFilter index={index} onChange={debounceChange} name={filter.field} where={where} schema={{[filter.field]: filter}}/>
+        case 'date':
+          return <DateFilter index={index} onChange={debounceChange} name={filter.field} where={where} value={filter.value}/>
         
         case 'text':
           return <TextFilter index={index} onChange={debounceChange} name={filter.field} where={where}/>;
+        case 'location':
+          return <LocationFilter index={index} onChange={debounceChange} name={filter.field} where={where}/>;
         default:
           return null;
       }

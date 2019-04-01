@@ -4,6 +4,8 @@ import {Input, Select} from 'antd';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import isEmpty from 'lodash/isEmpty';
+import GeoSuggest from 'antd-geosuggest';
+
 const operators = [
   {symbol: 'contains', value: 'regex'},
   {symbol: 'is', value: 'eq'},
@@ -11,7 +13,7 @@ const operators = [
 ];
 const Option = Select.Option;
 const InputGroup = Input.Group;
-export default class TextFilter extends Component {
+export default class LocationFilter extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     name: PropTypes.string,
@@ -51,42 +53,30 @@ export default class TextFilter extends Component {
 
   }
 
-  onChange() {
+  onChange(val) {
+      console.log(val)
     const {input, operator} = this.state;
     const {name, onChange} = this.props;
-    
-    onChange(isEmpty(input) ? undefined : {
-    [name]: {
-        [operator]: input
+    if(val.length >= 1){
+        const place = val[0]
+        onChange({
+            [name]: {
+                'near': {...place.location, max: 100000, min: 0}
+            }
+        });
+    }else{
+        onChange(undefined)
     }
-    });
+    
   }
 
   render() {
     const {operator} = this.state;
     const {label, where, name, index } = this.props;
     return (
-      <InputGroup compact>
-        <Select style={{width: 100}}
-          value={operator}
-          onChange={this.changeOperator}
-          data-testid={`number-filter-${index}-select`}
-        >
-          {
-            operators.map((operator) =>
-              <Option key={operator.value} value={operator.value}>
-                {operator.symbol}
-              </Option>)
-          }
-        </Select>
-      <Input
-        data-testid={`text-filter-${index}`}
-        style={{width: 140}}
-        placeholder={label}
-        onChange={this.onInput}
-        defaultValue={get(where, `${name}.contains`, '')}
-      />
-      </InputGroup>
+        <div style={{width: 380}}>
+            <GeoSuggest  style={{width: 380}} onChange={this.onChange}/>
+        </div>
     );
   }
 }

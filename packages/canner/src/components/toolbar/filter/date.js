@@ -16,35 +16,45 @@ const operators = [
 ];
 
 @injectIntl
-export default class DateRangeFilter extends Component {
+export default class DateFilter extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     name: PropTypes.string,
     label: PropTypes.string,
     intl: PropTypes.object,
-    index: PropTypes.number
+    index: PropTypes.number,
+    value: PropTypes.string,
   };
 
   constructor(props) {
-    console.log('CONSTRUCTOR')
     super(props);
     this.state = {
-      input: '',
-      lowInput: '',
-      operator: 'gt',
+      input: props.value ? props.value.input : '',
+      operator: props.value ? props.value.operator : 'gt',
     };
     this.onInput = this.onInput.bind(this);
     this.changeOperator = this.changeOperator.bind(this);
     this.onChange = this.onChange.bind(this);
+    if(props.value){
+        setTimeout(() => {
+            this.onChange()
+        }, 500)
+    }
+    
   }
 
 
   onInput(date, dateString) {
-      console.log(date, dateString)
-    
-      this.setState({
-        input: dateString,
-      }, this.onChange);
+        if(date){
+            this.setState({
+                input: date.format(),
+              }, this.onChange);
+        }else{
+            this.setState({
+                input: undefined,
+              }, this.onChange);
+        }
+      
     
   }
 
@@ -93,8 +103,8 @@ export default class DateRangeFilter extends Component {
           onChange={this.onInput}
         /> */}
         <DatePicker
-        value={moment(input)}
-        placeholder={placeholder}
+        value={input ? moment(input) : undefined}
+        placeholder={""}
         onChange={this.onInput}
       />
       </InputGroup>
