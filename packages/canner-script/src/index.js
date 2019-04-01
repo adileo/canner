@@ -131,6 +131,12 @@ export default function builder(tag: string | Function, attributes: Object, ...c
         type: 'date'
       };
     }
+    case 'dateRangeFilter': {
+      return {
+        ...attributes,
+        type: 'dateRange'
+      };
+    }
     case 'relationSelectFilter': {
       return {
         ...attributes,

@@ -2,10 +2,12 @@
 import * as React from 'react';
 import SelectFilter from './select';
 import NumberFilter from './number';
+import DateRangeFilter from './date';
 import TextFilter from './text';
 import styled from 'styled-components';
 import {Icon} from 'antd';
 import debounce from 'lodash/debounce';
+
 // import DateRangeFilter from './dateRange';
 import isEmpty from 'lodash/isEmpty';
 // import {FormattedMessage} from 'react-intl';
@@ -104,10 +106,10 @@ export default class FilterGroup extends React.Component<Props, State> {
           return <SelectFilter index={index} onChange={debounceChange} options={filter.options} where={where}/>;
         case 'number':
           return <NumberFilter index={index} onChange={debounceChange} name={filter.field} where={where}/>;
-        /*
+        
         case 'dateRange':
-          return <DateRangeFilter onChange={debounceChange} schema={{[filter.field]: filter}}/>
-        */
+          return <DateRangeFilter index={index} onChange={debounceChange} name={filter.field} where={where} schema={{[filter.field]: filter}}/>
+        
         case 'text':
           return <TextFilter index={index} onChange={debounceChange} name={filter.field} where={where}/>;
         default:
